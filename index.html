@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Barbería Kevin - Pilar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Raleway:wght@300;400;600&display=swap');
+
+        :root {
+            --gold: #d4af37;
+            --dark: #0a0a0a;
+            --card-bg: rgba(18, 18, 18, 0.90);
+        }
+
+        body {
+            background-color: var(--dark);
+            color: white;
+            font-family: 'Raleway', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* Permite scroll si el contenido crece (necesario para las fotos) */
+            overflow-y: auto; 
+            padding: 20px 0;
+            transition: background 2s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Clase que activa la imagen de fondo con un filtro oscuro */
+        .bg-active {
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.85)), url('imagenBarberia1.png.png');
+        }
+
+        .cinzel { font-family: 'Cinzel', serif; }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background-color: var(--dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            transition: opacity 0.8s ease;
+        }
+
+        .clipper-icon {
+            width: 100px;
+            height: 100px;
+            fill: var(--gold);
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+            cursor: pointer;
+        }
+
+        /* Animación de latido para el botón principal */
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+
+        .btn-pulse {
+            animation: pulse-gold 2s infinite;
+        }
+
+        #main-content {
+            display: none;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            max-width: 380px;
+            width: 90%;
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 28px;
+            backdrop-filter: blur(12px);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            margin: auto; /* Centra el contenido en el scroll */
+        }
+
+        .btn-main {
+            background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
+            color: #000;
+            padding: 1.2rem;
+            border-radius: 15px;
+            font-weight: 800;
+            display: block;
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .btn-main:active { transform: scale(0.98); }
+
+        /* --- NUEVOS ESTILOS PARA LA GALERÍA Y ZOOM --- */
+        
+        .gallery-container {
+            overflow: hidden; /* Importante para que el zoom no se salga del borde */
+            border-radius: 12px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            aspect-ratio: 1 / 1; /* Mantiene las fotos cuadradas */
+        }
+
+        .corte-img {
+            width: 60%; /*hace que cuadro de la foto se vea mucho mas chicho*/
+            height: 100%;
+            object-fit: cover; /* Recorta la foto para que llene el cuadrado sin deformarse */
+            transition: transform 0.5s ease, border-color 0.3s ease; /* Transición suave del zoom */
+            display: block;
+        }
+
+        /* Efecto Zoom al pasar el ratón (PC) o mantener pulsado (Móvil) */
+        .gallery-container:hover .corte-img,
+        .gallery-container:active .corte-img {
+            transform: scale(1.50); /* Aumenta el tamaño un 50%, (1.15) seria un 15% lo que está dentro de la foto */
+            border-color: var(--gold);
+        }
+
+        /* Brillo dorado en el contenedor al hacer zoom */
+        .gallery-container:hover {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+            border-color: var(--gold);
+        }
+
+        /* --- FIN ESTILOS GALERÍA --- */
+
+        .social-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            color: var(--gold);
+            padding: 0.8rem;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <div id="clipper-btn" class="flex flex-col items-center cursor-pointer">
+            <svg class="clipper-icon mb-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19,10V7H15V3H13V7H11V3H9V7H5V10C5,12.76 7.24,15 10,15H14C16.76,15 19,12.76 19,10M7,10V9H17V10C17,11.66 15.66,13 14,13H10C8.34,13 7,11.66 7,10M17,17V16H7V17C7,18.66 8.34,20 10,20V22H14V20C15.66,20 17,18.66 17,17Z" />
+            </svg>
+            <span class="cinzel gold-text tracking-widest text-sm animate-pulse">Toca para comenzar</span>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <h1 class="cinzel text-4xl font-bold text-[#d4af37] mb-2">Saucedo</h1>
+        <p class="text-xs tracking-[0.3em] text-gray-400 uppercase mb-6">Barbería & Estudios</p>
+        
+        <div class="w-24 h-[1px] bg-yellow-600 mx-auto mb-6"></div>
+
+        <div class="space-y-4 mb-8">
+            <p class="text-gray-200 text-sm italic">"Cortes Clásicos y Modernos con la mejor atención de Pilar."</p>
+            <div class="flex items-center justify-center gap-2 text-xs text-gray-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                Pilar Centro, Buenos Aires
+            </div>
+        </div>
+
+        <div class="mb-8">
+            <h3 class="cinzel text-lg text-[#d4af37] mb-5 tracking-widest uppercase">Cortes Populares</h3>
+            
+            <div class="grid grid-cols-1 gap-1"> 
+
+                <div class="gallery-container">
+                    <img src="foto1.jpeg" alt="Corte Clásico Saucedo" class="corte-img">
+                </div>
+                
+                <div class="gallery-container">
+                    <img src="foto2.jpeg" alt="Fade Moderno Saucedo" class="corte-img">
+                </div>
+                
+                <div class="gallery-container">
+                    <img src="foto3.jpeg" alt="Diseño Barba Saucedo" class="corte-img">
+                </div>
+                
+              
+                
+            </div>
+        </div>
+        <div class="flex justify-center gap-2 mb-2">
+            <a href="#" class="social-btn" id="wa-small">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.938 3.659 1.432 5.628 1.433h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            </a>
+            <a href="https://instagram.com" class="social-btn">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.17.054 1.805.249 2.227.412.56.216.96.474 1.38.894.42.42.678.82.894 1.38.163.422.358 1.057.412 2.227.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.054 1.17-.249 1.805-.412 2.227-.216.56-.474.96-.894 1.38-.42.42-.82.678-1.38.894-.422.163-1.057.358-2.227.412-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.17-.054-1.805-.249-2.227-.412-.56-.216-.96-.474-1.38-.894-.42-.42-.678-.82-.894-1.38-.163-.422-.358 1.057-.412-2.227-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.054-1.17.249-1.805.412-2.227.216-.56.474-.96.894-1.38.42-.42.82-.678 1.38-.894.422-.163 1.057-.358 2.227-.412 1.266-.058 1.646-.07 4.85-.07M12 0C8.741 0 8.333.014 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.132 5.775.072 7.053.014 8.333 0 8.741 0 12s.014 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126s1.384 1.078 2.126 1.384c.766.296 1.636.499 2.913.558C8.333 23.986 8.741 24 12 24s3.667-.014 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384s1.078-1.384 1.384-2.126c.296-.765.499-1.636.558-2.913.058-1.28.072-1.687.072-4.947s-.014-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126s-1.384-1.078-2.126-1.384c-.765-.296-1.636-.499-2.913-.558C15.667.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </a>
+        </div>
+
+        <a id="main-wa-btn" href="#" class="btn-main btn-pulse">Agendar Turno</a>
+    </div>
+
+    <script>
+        const splash = document.getElementById('splash-screen');
+        const clipperBtn = document.getElementById('clipper-btn');
+        const mainContent = document.getElementById('main-content');
+        const body = document.body;
+
+        // Configuración de WhatsApp
+        const phone = "5491159038493";
+        const message = encodeURIComponent("¡Hola Kevin! Vi tu anuncio y quiero agendar un turno.");
+        const waLink = `https://wa.me/${phone}?text=${message}`;
+
+        document.getElementById('wa-small').href = waLink;
+        document.getElementById('main-wa-btn').href = waLink;
+
+        // Evento de clic en la maquinita
+        clipperBtn.addEventListener('click', () => {
+            // Activar fondo con imagen
+            body.classList.add('bg-active');
+            
+            // Animación de salida del splash
+            splash.style.opacity = '0';
+            
+            setTimeout(() => {
+                splash.style.display = 'none';
+                mainContent.style.display = 'block';
+                
+                // Pequeño delay para que la transición de entrada se note
+                setTimeout(() => {
+                    mainContent.style.opacity = '1';
+                    mainContent.style.transform = 'scale(1)';
+                }, 50);
+            }, 800);
+        });
+    </script>
+</body>
+</html>
